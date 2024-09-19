@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitio Web Minimalista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #FF4500;
+            color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .button {
+            background-color: white;
+            color: #FF4500;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 600;
+        }
+        .button:hover {
+            background-color: #FF6347;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        #loginForm input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 200px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .loading-dots {
+            font-size: 2em;
+            letter-spacing: 5px;
+        }
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+        .dot {
+            animation: blink 1s infinite;
+        }
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        .apps-help {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .apps-help p {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .apps-help-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        .apps-help img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+        #success h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        #success p {
+            font-size: 1em;
+            margin-top: 20px;
+            font-weight: 400;
+        }
+        @keyframes confetti {
+            0% { transform: translateY(0) rotateZ(0); opacity: 1; }
+            100% { transform: translateY(1000px) rotateZ(720deg); opacity: 0; }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f0f0;
+            opacity: 0;
+        }
+        /* Estilo actualizado para la animación del check */
+        .check-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+        .check {
+            width: 25px;
+            height: 50px;
+            border-bottom: 3px solid white;
+            border-right: 3px solid white;
+            transform: rotate(45deg);
+            margin-top: -10px;
+            margin-left: -5px;
+        }
+        .check-animation {
+            animation: check-grow 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+        }
+        @keyframes check-grow {
+            0% {
+                width: 0;
+                height: 0;
+            }
+            100% {
+                width: 25px;
+                height: 50px;
+            }
+        }
+        /* Efecto de degradado para la transición */
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
+        .fade-in {
+            animation: fadeIn 1s forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <img src="https://i.ibb.co/DgsVJXp/17-sin-t-tulo-removebg.png" alt="Logo" class="logo">
+    <div class="container">
+        <div id="home">
+            <h1>Te sorprende la página ¿Mama?</h1>
+            <button class="button" onclick="showLogin()">Siguiente</button>
+        </div>
+        <div id="login" class="hidden">
+            <div class="apps-help">
+                <p>Apps que fueron de ayuda al momento de crear este sitio web:</p>
+                <div class="apps-help-icons">
+                    <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/claude-ai-icon.png" alt="Claude AI">
+                    <img src="https://ghost.org/images/logos/ghost-logo-orb.png" alt="Ghost.io">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Remove.bg_icon_2019.svg/2560px-Remove.bg_icon_2019.svg.png" alt="Remove BG">
+                </div>
+            </div>
+            <form id="loginForm" onsubmit="event.preventDefault(); showLoading();">
+                <input type="email" placeholder="Correo electrónico" required><br>
+                <input type="password" placeholder="Contraseña" required><br>
+                <button class="button" type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+        <div id="loading" class="hidden">
+            <div class="loading-dots"><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+        </div>
+        <div id="success" class="hidden">
+            <h2>¿Quieres que siga?</h2>
+            <p>Felicidades, este es uno de los tantos proyectos que quiero construir. Solo con tus felicitaciones son suficientes.</p>
+        </div>
+    </div>
+
+    <script>
+        function showLogin() {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('login').classList.remove('hidden');
+        }
+
+        function showLoading() {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('loading').innerHTML = '<div class="check-wrapper"><div class="check check-animation"></div></div>';
+                setTimeout(() => {
+                    document.getElementById('loading').classList.add('fade-out');
+                    setTimeout(() => {
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('success').classList.remove('hidden');
+                        document.getElementById('success').classList.add('fade-in');
+                        createConfetti();
+                    }, 1000);
+                }, 2000);
+            }, 3000);
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = -10 + 'px';
+                confetti.style.backgroundColor = ['#ff0', '#f0f', '#0ff'][Math.floor(Math.random() * 3)];
+                confetti.style.animation = `confetti ${Math.random() * 3 + 2}s linear`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+    </script>
+
+</body></html>
