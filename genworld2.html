@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePass - Creador de Contraseñas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #FF4500;
+            --secondary-color: #1E1E1E;
+            --text-color: #FFFFFF;
+            --background-color: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .cta-button:hover {
+            background-color: #FF6347;
+        }
+
+        .password-generator {
+            padding: 100px 0;
+        }
+
+        .password-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 16px;
+            color: var(--text-color);
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .strength-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .strength-bar {
+            height: 8px;
+            flex-grow: 1;
+            margin-right: 8px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .strength-bar:last-child {
+            margin-right: 0;
+        }
+
+        .strength-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .generate-button {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .generate-button:hover {
+            background-color: #FF6347;
+        }
+
+        .features {
+            padding: 100px 0;
+            background-color: var(--secondary-color);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .testimonials {
+            padding: 100px 0;
+            background-color: var(--background-color);
+        }
+
+        .testimonial-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .testimonial-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .testimonial-item {
+            flex: 0 0 300px;
+            margin-right: 30px;
+            scroll-snap-align: start;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .testimonial-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .testimonial-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(255,69,0,0.5) 0%, rgba(255,69,0,0) 100%);
+        }
+
+        .testimonial-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .testimonial-content {
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .testimonial-author {
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .feature-icon {
+                font-size: 28px;
+            }
+
+            .feature-title {
+                font-size: 18px;
+            }
+
+            .feature-description {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<!-- Start of LiveChat (www.livechat.com) code -->
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = 18604101;
+    window.__lc.integration_name = "manual_channels";
+    window.__lc.product_name = "livechat";
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+</script>
+<noscript><a href="https://www.livechat.com/chat-with/18604101/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+<!-- End of LiveChat code -->
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">SecurePass</div>
+                <div class="nav-links">
+                    <a href="#home">Inicio</a>
+                    <a href="#generator">Generador</a>
+                    <a href="#features">Características</a>
+                    <a href="#testimonials">Testimonios</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Contraseñas Seguras<br>en un Instante</h1>
+                <p>Genera contraseñas fuertes y únicas para proteger tus cuentas en línea.</p>
+                <a href="#generator" class="cta-button">Crear Contraseña</a>
+            </div>
+        </section>
+
+        <section id="generator" class="password-generator">
+            <div class="container">
+                <h2>Generador de Contraseñas</h2>
+                <input type="text" id="passwordInput" class="password-input" placeholder="Tu contraseña segura aparecerá aquí">
+                <div class="strength-indicator">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                </div>
+                <div class="strength-text">Fortaleza de la contraseña: <span id="strengthText">-</span></div>
+                <button id="generateBtn" class="generate-button">Generar Contraseña</button>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Características</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">Seguridad Avanzada</h3>
+                        <p class="feature-description">Utiliza algoritmos criptográficos de última generación para crear contraseñas imposibles de adivinar.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">Generación Instantánea</h3>
+                        <p class="feature-description">Crea contraseñas seguras en cuestión de segundos con solo un clic.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Diseño Responsivo</h3>
+                        <p class="feature-description">Funciona perfectamente en todos tus dispositivos, desde móviles hasta ordenadores de escritorio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="testimonials">
+            <div class="container">
+                <h2>Lo que dicen nuestros usuarios</h2>
+                <div class="testimonial-carousel">
+                    <div class="testimonial-item">
+                        <div class="testimonial-image">
+                            <img src="https://this-person-does-not-exist.com/img/avatar-gen8be046da9d79037a019d2114f0d0b2fd.jpg" alt="Joven usuario">
+                        </div>
+                        <div class="testimonial-content">
+                            "This website is just incredible! My passwords are now more secure than ever."
+                        </div>
+                        <div class="testimonial-author">- Brenda Alzon</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <div class="testimonial-image">
+                            <img src="https://this-person-does-not-exist.com/img/avatar-gen1d83cce06b8b962d11071e999b2dcbe0.jpg" alt="Hombre adulto">
+                        </div>
+                        <div class="testimonial-content">
+                            "SecurePass has made managing my online accounts so much easier. Highly recommended!"
+                        </div>
+                        <div class="testimonial-author">- Michael Johnson</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <div class="testimonial-image">
+                            <img src="https://this-person-does-not-exist.com/img/avatar-gen78fcb4dd5eddc3383dc0e07d3d8547d7.jpg" alt="Mujer adulta">
+                        </div>
+                        <div class="testimonial-content">
+                            "I feel much safer online now that I'm using strong, unique passwords for all my accounts."
+                        </div>
+                        <div class="testimonial-author">- Sarah Thompson</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p class="footer-text">© 2024 SecurePass. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const passwordInput = document.getElementById('passwordInput');
+        const strengthBars = document.querySelectorAll('.strength-bar');
+        const strengthText = document.getElementById('strengthText');
+        const generateBtn = document.getElementById('generateBtn');
+
+        const header = document.querySelector('header');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        
+    generateBtn.addEventListener('click', generatePassword);
+
+    function generatePassword() {
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+        let password = "";
+        for (let i = 0; i < 16; i++) {
+            password += charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        passwordInput.value = password;
+        checkPasswordStrength(password);
+    }
+
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]+/)) strength++;
+        if (password.match(/[A-Z]+/)) strength++;
+        if (password.match(/[0-9]+/)) strength++;
+        if (password.match(/[$@#&!]+/)) strength++;
+
+        strengthBars.forEach((bar, index) => {
+            if (index < strength) {
+                bar.style.backgroundColor = getColor(strength);
+            } else {
+                bar.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+
+        const strengthLabels = ['Muy débil', 'Débil', 'Moderada', 'Fuerte', 'Muy fuerte'];
+        strengthText.textContent = strengthLabels[strength - 1] || '-';
+        strengthText.style.color = getColor(strength);
+    }
+
+    function getColor(strength) {
+        switch (strength) {
+            case 1: return '#FF4500';
+            case 2: return '#FFA500';
+            case 3: return '#FFD700';
+            case 4: return '#9ACD32';
+            case 5: return '#00FF00';
+            default: return '#FFFFFF';
+        }
+    }
+
+    // Animaciones GSAP
+    gsap.from('.hero h1', { opacity: 0, y: 50, duration: 1, delay: 0.5 });
+    gsap.from('.hero p', { opacity: 0, y: 50, duration: 1, delay: 0.7 });
+    gsap.from('.cta-button', { opacity: 0, y: 50, duration: 1, delay: 0.9 });
+
+    gsap.from('.feature-card', {
+        scrollTrigger: {
+            trigger: '.features',
+            start: 'top 80%',
+        },
+        opacity: 0,
+        y: 50,
+        stagger: 0.2,
+        duration: 1
+    });
+
+    // Animación para los testimonios
+    gsap.from('.testimonial-item', {
+        scrollTrigger: {
+            trigger: '.testimonials',
+            start: 'top 80%',
+        },
+        opacity: 0,
+        x: 50,
+        stagger: 0.2,
+        duration: 1
+    });
+</script>
+
+</body></html>
